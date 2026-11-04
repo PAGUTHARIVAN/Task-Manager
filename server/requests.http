@@ -1,0 +1,106 @@
+@baseUrl = http://localhost:5001
+
+### Health
+GET {{baseUrl}}/api/health
+
+### List todos
+GET {{baseUrl}}/api/todos
+
+### Get one todo
+GET {{baseUrl}}/api/todos/1
+
+### Create todo
+GET {{baseUrl}}/api/todos
+Content-Type: application/json
+
+{ 
+    "text": "Learn MongoDB"
+}
+
+### Empty text (400 expected)
+POST {{baseUrl}}/api/todos
+Content-Type: application/json
+
+{
+    "text:" "  "
+}
+
+### Mass assignment try (id, done)
+POST {{baseUrl}}/api/todos
+Content-Type: application/json
+
+{
+    "text": "hack",
+    "id": 99,
+    "done": true
+}
+
+### Invalid id (400 expected)
+GET {{baseUrl}}/api/todos/abc
+
+### Not found (404 expected)
+GET {{baseUrl}}/api/todos/999
+
+### Update (PUT) - full
+PUT {{baseUrl}}/api/todos/1
+Content-Type: application/json
+
+{
+    "text": "Learn Express well",
+    "done": true
+}
+
+### PUT missing done (400)
+PUT {{baseUrl}}/api/todos/1
+Content-Type: application/json
+
+{
+    "text": "X"
+}
+
+### PATCH done only
+PATCH {{baseUrl}}/api/todos/1
+Content-Type: application/json
+
+{
+    "done": false
+}
+
+### PATCH text only
+PATCH {{baseUrl}}/api/todos/1
+Content-Type: application/json
+
+{
+    "text": "  Edited text  "
+}
+
+### PATCH empty (400)
+PATCH {{baseUrl}}/api/todos/1
+Content-Type: application/json
+
+{}
+
+### PATCH mass assignment
+PATCH {{baseUrl}}/api/todos/1
+Content-Type: application/json
+
+{
+    "id": 99,
+    "isAdmin": true,
+    "done": true
+}
+
+### PATCH valid text, invalid done (400)
+PATCH {{baseUrl}}/api/todos/1
+Content-Type: application/json
+
+{
+    "text": "CHANGED",
+    "done": "yes"
+}
+
+### DELETE (204)
+DELETE {{baseUrl}}/api/todos/2
+
+### DELETE again (404)
+DELETE {{baseUrl}}/api/todos/2
