@@ -1,0 +1,69 @@
+import { AppError } from "../errors.js";
+import * as store from "../data/todos.store.js";
+import {
+  parseId,
+  parseText,
+  parseDone,
+} from "../validators/todo.validators.js";
+
+//findTodoOrThrow
+export const findTodoOrThrow = (idParam) => {
+  const id = parseId(idParam);
+  const todo = store.findById(id);
+  if (!todo) throw new AppError(404, "Todo not found");
+  return todo;
+};
+
+//listTodos
+export const listTodos = (req, res) => {
+  res.json(store.getAll());
+};
+
+//getTodo
+export const getTodo = (req, res) => {
+  const tod = findTodoOrThrow(req.params.id);
+  const todo = store.findById(tod.id);
+  res.json(todo);
+};
+
+//createTodo
+export const createTodo = (req, res) => {
+  const text = parseText(req.body?.text);
+  const todo = store.create(text);
+  res.json(todo);
+};
+
+//updateTodo
+export const updateTodo = (req, res) => {
+  const todo = findTodoOrThrow(req.params.id);
+  const { text: rawText, done: rawDone } = req.body ?? {};
+
+  if (rawText === undefined && rawDone === undefined) {
+    throw new AppError(400, "Provide text or done to update");
+  }
+
+  const text = rawText === undefined ? todo.text : parseText(rawText);
+  const done = rawDone === undefined ? todo.done : parseDone(rawDone);
+
+  todo.text = text;
+  todo.done = done;
+  res.json(todo);
+};
+
+//replaceTodo
+export const replaceTodo = (req, res) => {
+  const todo = findTodoOrThrow(req.params.id);
+  const text = parseText(req.body?.text);
+  const done = parseDone(req.body?.done);
+
+  todo.text = text;
+  todo.done = done;
+  res.json(todo);
+};
+
+//deleteTodo
+export const deleteTodo = (req, res) => {
+  const todo = findTodoOrThrow(req.params.id);
+  store.remove(todo.id);
+  res.status(204).end();
+};
