@@ -1,19 +1,14 @@
 import { Router } from "express";
-
 import {
   listTodos,
-  createTodo,
   getTodo,
+  createTodo,
   updateTodo,
   replaceTodo,
   deleteTodo,
-} from "../controllers/todos.controller.js";
+} from "../controllers/todos.controllers.js";
 
 const router = Router();
-
-router.use((req, res, next) => {
-  next();
-});
 
 router.get("/", listTodos);
 router.post("/", createTodo);

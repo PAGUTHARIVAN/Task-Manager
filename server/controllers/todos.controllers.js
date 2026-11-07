@@ -4,42 +4,37 @@ import {
   parseId,
   parseText,
   parseDone,
-} from "../validators/todo.validators.js";
+} from "../validators/todos.validators.js";
 
-//findTodoOrThrow
 export const findTodoOrThrow = (idParam) => {
   const id = parseId(idParam);
   const todo = store.findById(id);
-  if (!todo) throw new AppError(404, "Todo not found");
+  if (!todo) {
+    throw new AppError(404, "Todo not found");
+  }
   return todo;
 };
 
-//listTodos
 export const listTodos = (req, res) => {
   res.json(store.getAll());
 };
 
-//getTodo
 export const getTodo = (req, res) => {
-  const tod = findTodoOrThrow(req.params.id);
-  const todo = store.findById(tod.id);
-  res.json(todo);
+  res.json(findTodoOrThrow(req.params.id));
 };
 
-//createTodo
 export const createTodo = (req, res) => {
   const text = parseText(req.body?.text);
   const todo = store.create(text);
-  res.json(todo);
+  res.status(201).json(todo);
 };
 
-//updateTodo
 export const updateTodo = (req, res) => {
   const todo = findTodoOrThrow(req.params.id);
   const { text: rawText, done: rawDone } = req.body ?? {};
 
   if (rawText === undefined && rawDone === undefined) {
-    throw new AppError(400, "Provide text or done to update");
+    throw new AppError(400, "Provide Text or Done to update");
   }
 
   const text = rawText === undefined ? todo.text : parseText(rawText);
@@ -50,7 +45,6 @@ export const updateTodo = (req, res) => {
   res.json(todo);
 };
 
-//replaceTodo
 export const replaceTodo = (req, res) => {
   const todo = findTodoOrThrow(req.params.id);
   const text = parseText(req.body?.text);
@@ -61,7 +55,6 @@ export const replaceTodo = (req, res) => {
   res.json(todo);
 };
 
-//deleteTodo
 export const deleteTodo = (req, res) => {
   const todo = findTodoOrThrow(req.params.id);
   store.remove(todo.id);

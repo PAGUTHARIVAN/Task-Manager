@@ -1,4 +1,11 @@
-let todos = [{ id: 1, text: "MongoDB", done: false }];
+//Temp Database
+let todos = [
+  {
+    id: 1,
+    text: "Learn ExpressJs",
+    done: false,
+  },
+];
 let nextId = 2;
 
 export const getAll = () => {

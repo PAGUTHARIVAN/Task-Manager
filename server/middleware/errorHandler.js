@@ -10,7 +10,7 @@ export const errorHandler = (err, req, res, next) => {
   }
   const isBadJson = err.type === "entity.parse.failed";
   const message = isBadJson
-    ? "Json request body is invalid"
+    ? "Json request is body invalid"
     : err instanceof AppError || status < 500
       ? err.message
       : "Internal server error";

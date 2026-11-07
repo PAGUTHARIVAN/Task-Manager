@@ -15,11 +15,12 @@ const allowedOrigins = (
 app.use(cors({ origin: allowedOrigins }));
 app.use(express.json({ limit: "10kb" }));
 
-app.get("/api/healht", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
 app.use("/api/todos", todosRouter);
+
 app.use(notFound);
 app.use(errorHandler);
 
