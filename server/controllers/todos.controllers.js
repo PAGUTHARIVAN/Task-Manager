@@ -7,7 +7,7 @@ import {
 } from "../validators/todos.validators.js";
 
 export const findTodoOrThrow = (idParam) => {
-  const id = parseId(idParam);
+  const id = Number(idParam);
   const todo = store.findById(id);
   if (!todo) {
     throw new AppError(404, "Todo not found");

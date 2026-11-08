@@ -16,5 +16,4 @@ router.get("/:id", getTodo);
 router.patch("/:id", updateTodo);
 router.put("/:id", replaceTodo);
 router.delete("/:id", deleteTodo);
-
 export default router;
