@@ -1,13 +1,5 @@
 import { AppError } from "../errors.js";
 
-export const parseId = (idParam) => {
-  const id = Number(idParam);
-  if (!Number.isInteger(id) || id < 1) {
-    throw new AppError(400, "Invalid todo id");
-  }
-  return id;
-};
-
 export const parseText = (value) => {
   const text = typeof value === "string" ? value.trim() : "";
   if (!text) {

@@ -1,36 +1,42 @@
+import mongoose from "mongoose";
 import { AppError } from "../errors.js";
-import * as store from "../data/todos.store.js";
-import {
-  parseId,
-  parseText,
-  parseDone,
-} from "../validators/todos.validators.js";
+import { Todo } from "../models/todo.model.js";
+import { parseText, parseDone } from "../validators/todos.validators.js";
 
-export const findTodoOrThrow = (idParam) => {
-  const id = Number(idParam);
-  const todo = store.findById(id);
+//Helper: Validate MongoDB ID and find document
+export const findTodoOrThrow = async (idParam) => {
+  if (!mongoose.isValidObjectId(idParam)) {
+    throw new AppError(400, "Invalid Todo ID format");
+  }
+  const todo = await Todo.findById(idParam);
   if (!todo) {
     throw new AppError(404, "Todo not found");
   }
   return todo;
 };
 
-export const listTodos = (req, res) => {
-  res.json(store.getAll());
+// GET /api/todos
+export const listTodos = async (req, res) => {
+  const todos = await Todo.find().sort({ createdAt: -1 });
+  res.json(todos);
 };
 
-export const getTodo = (req, res) => {
-  res.json(findTodoOrThrow(req.params.id));
+// GET /api/todos/id
+export const getTodo = async (req, res) => {
+  const todo = await findTodoOrThrow(req.params.id);
+  res.json(todo);
 };
 
-export const createTodo = (req, res) => {
+// POST /api/todos
+export const createTodo = async (req, res) => {
   const text = parseText(req.body?.text);
-  const todo = store.create(text);
+  const todo = await Todo.create({ text });
   res.status(201).json(todo);
 };
 
-export const updateTodo = (req, res) => {
-  const todo = findTodoOrThrow(req.params.id);
+// PATCH /api/todos/:id
+export const updateTodo = async (req, res) => {
+  const todo = await findTodoOrThrow(req.params.id);
   const { text: rawText, done: rawDone } = req.body ?? {};
 
   if (rawText === undefined && rawDone === undefined) {
@@ -42,21 +48,24 @@ export const updateTodo = (req, res) => {
 
   todo.text = text;
   todo.done = done;
+  await todo.save(); //Saves updated changes back to MongoDB
+
   res.json(todo);
 };
 
-export const replaceTodo = (req, res) => {
-  const todo = findTodoOrThrow(req.params.id);
+export const replaceTodo = async (req, res) => {
+  const todo = await findTodoOrThrow(req.params.id);
   const text = parseText(req.body?.text);
   const done = parseDone(req.body?.done);
 
   todo.text = text;
   todo.done = done;
-  res.json(todo);
+  await todo.save();
+  res.json();
 };
 
-export const deleteTodo = (req, res) => {
-  const todo = findTodoOrThrow(req.params.id);
-  store.remove(todo.id);
+export const deleteTodo = async (req, res) => {
+  const todo = await findTodoOrThrow(req.params.id);
+  await todo.deleteOne();
   res.status(204).end();
 };
