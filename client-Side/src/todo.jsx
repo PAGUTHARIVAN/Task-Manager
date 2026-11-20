@@ -86,7 +86,7 @@ export const TodoApp = () => {
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <h1 className="text-2xl font-bold tracking-tight text-white">
-            MERN Todo App
+            Simple Task Manager
           </h1>
           <span className="text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full">
             {doneCount} / {todos.length} done
