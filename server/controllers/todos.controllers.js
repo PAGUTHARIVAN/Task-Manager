@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
-import { AppError } from "../errors.js";
 import { Todo } from "../models/todo.model.js";
+import { AppError } from "../errors.js";
 import { parseText, parseDone } from "../validators/todos.validators.js";
-
-//Helper: Validate MongoDB ID and find document
+//Helper function
 export const findTodoOrThrow = async (idParam) => {
   if (!mongoose.isValidObjectId(idParam)) {
-    throw new AppError(400, "Invalid Todo ID format");
+    throw new AppError(400, "Invalid todo Id format.");
   }
   const todo = await Todo.findById(idParam);
   if (!todo) {
@@ -15,32 +14,31 @@ export const findTodoOrThrow = async (idParam) => {
   return todo;
 };
 
-// GET /api/todos
+//GET: listTodos
 export const listTodos = async (req, res) => {
   const todos = await Todo.find().sort({ createdAt: -1 });
   res.json(todos);
 };
 
-// GET /api/todos/id
+//Get: GetTodo
 export const getTodo = async (req, res) => {
   const todo = await findTodoOrThrow(req.params.id);
   res.json(todo);
 };
 
-// POST /api/todos
+//POST: createTodo
 export const createTodo = async (req, res) => {
   const text = parseText(req.body?.text);
   const todo = await Todo.create({ text });
   res.status(201).json(todo);
 };
-
-// PATCH /api/todos/:id
+//PATCH: updateTodo
 export const updateTodo = async (req, res) => {
   const todo = await findTodoOrThrow(req.params.id);
   const { text: rawText, done: rawDone } = req.body ?? {};
 
   if (rawText === undefined && rawDone === undefined) {
-    throw new AppError(400, "Provide Text or Done to update");
+    throw new Error(400, "Provide Text or Done to update todo.");
   }
 
   const text = rawText === undefined ? todo.text : parseText(rawText);
@@ -48,11 +46,11 @@ export const updateTodo = async (req, res) => {
 
   todo.text = text;
   todo.done = done;
-  await todo.save(); //Saves updated changes back to MongoDB
+  await todo.save();
 
   res.json(todo);
 };
-
+//PUT: replaceTodo
 export const replaceTodo = async (req, res) => {
   const todo = await findTodoOrThrow(req.params.id);
   const text = parseText(req.body?.text);
@@ -61,9 +59,10 @@ export const replaceTodo = async (req, res) => {
   todo.text = text;
   todo.done = done;
   await todo.save();
-  res.json();
-};
 
+  res.json(todo);
+};
+//DELETE: deleteTodo
 export const deleteTodo = async (req, res) => {
   const todo = await findTodoOrThrow(req.params.id);
   await todo.deleteOne();

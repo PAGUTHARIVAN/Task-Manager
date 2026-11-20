@@ -1,19 +1,17 @@
 import mongoose from "mongoose";
 
 const todoSchema = new mongoose.Schema(
-  //Data fields
   {
     text: {
       type: String,
+      required: [true, "text is required"],
       trim: true,
-      required: [true, "Text is required"],
     },
     done: {
       type: Boolean,
       default: false,
     },
   },
-  //Data options
   {
     timestamps: true,
     toJSON: {
@@ -26,4 +24,5 @@ const todoSchema = new mongoose.Schema(
     },
   },
 );
-export const Todo = mongoose.model("Todo", todoSchema);
+
+export const Todo = mongoose.model("todos", todoSchema);
