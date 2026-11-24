@@ -5,7 +5,7 @@ import {
   updateTodoStatus,
   deleteTodo,
 } from "../api/todosApi.js";
-
+import { logout } from "./authSlice.js";
 export const fetchTodosAsync = createAsyncThunk(
   "todos/fetchTodos",
   async () => {
@@ -70,6 +70,12 @@ const todosSlice = createSlice({
 
       .addCase(removeTodoAsync.fulfilled, (state, action) => {
         state.items = state.items.filter((i) => i.id !== action.payload);
+      })
+
+      .addCase(logout, (state) => {
+        state.items = [];
+        state.status = "idle";
+        state.error = null;
       });
   },
 });
