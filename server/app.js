@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import todosRouter from "./routes/todos.routes.js";
+import todosRoutes from "./routes/todos.routes.js";
+import authRouter from "./routes/auth.routes.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -19,7 +20,8 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
-app.use("/api/todos", todosRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/todos", todosRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

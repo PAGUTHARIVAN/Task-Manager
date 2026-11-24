@@ -2,12 +2,13 @@ import mongoose from "mongoose";
 import { Todo } from "../models/todo.model.js";
 import { AppError } from "../errors.js";
 import { parseText, parseDone } from "../validators/todos.validators.js";
+
 //Helper function
-export const findTodoOrThrow = async (idParam) => {
+export const findTodoOrThrow = async (idParam, userId) => {
   if (!mongoose.isValidObjectId(idParam)) {
     throw new AppError(400, "Invalid todo Id format.");
   }
-  const todo = await Todo.findById(idParam);
+  const todo = await Todo.findOne({ _id: idParam, user: userId });
   if (!todo) {
     throw new AppError(404, "Todo not found");
   }
@@ -16,25 +17,26 @@ export const findTodoOrThrow = async (idParam) => {
 
 //GET: listTodos
 export const listTodos = async (req, res) => {
-  const todos = await Todo.find().sort({ createdAt: -1 });
+  const todos = await Todo.find({ user: req.userId }).sort({ createdAt: -1 });
   res.json(todos);
 };
 
 //Get: GetTodo
 export const getTodo = async (req, res) => {
-  const todo = await findTodoOrThrow(req.params.id);
+  const todo = await findTodoOrThrow(req.params.id, req.userId);
   res.json(todo);
 };
 
 //POST: createTodo
 export const createTodo = async (req, res) => {
   const text = parseText(req.body?.text);
-  const todo = await Todo.create({ text });
+  const todo = await Todo.create({ text, user: req.userId });
   res.status(201).json(todo);
 };
+
 //PATCH: updateTodo
 export const updateTodo = async (req, res) => {
-  const todo = await findTodoOrThrow(req.params.id);
+  const todo = await findTodoOrThrow(req.params.id, req.userId);
   const { text: rawText, done: rawDone } = req.body ?? {};
 
   if (rawText === undefined && rawDone === undefined) {
@@ -52,7 +54,7 @@ export const updateTodo = async (req, res) => {
 };
 //PUT: replaceTodo
 export const replaceTodo = async (req, res) => {
-  const todo = await findTodoOrThrow(req.params.id);
+  const todo = await findTodoOrThrow(req.params.id, req.userId);
   const text = parseText(req.body?.text);
   const done = parseDone(req.body?.done);
 
@@ -62,9 +64,10 @@ export const replaceTodo = async (req, res) => {
 
   res.json(todo);
 };
+
 //DELETE: deleteTodo
 export const deleteTodo = async (req, res) => {
-  const todo = await findTodoOrThrow(req.params.id);
+  const todo = await findTodoOrThrow(req.params.id, req.userId);
   await todo.deleteOne();
   res.status(204).end();
 };

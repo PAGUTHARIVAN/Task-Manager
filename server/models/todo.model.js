@@ -4,12 +4,18 @@ const todoSchema = new mongoose.Schema(
   {
     text: {
       type: String,
-      required: [true, "text is required"],
+      required: true,
       trim: true,
     },
     done: {
       type: Boolean,
       default: false,
+    },
+    //NEW: Owner of this todo
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   {

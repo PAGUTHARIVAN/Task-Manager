@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:5001
-
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZiMDE1Y2FjNmY3YjY0OTliYzY3ZWJmOCIsImlhdCI6MTc5NTMyMjY2NywiZXhwIjoxNzk1OTI3NDY3fQ.ixWBuP1tQ6vM9LDAPw3KJqrYIK1P0gi824UYSOATSHI
 ### Health
 GET {{baseUrl}}/api/health
 
@@ -104,3 +104,59 @@ DELETE {{baseUrl}}/api/todos/2
 
 ### DELETE again (404)
 DELETE {{baseUrl}}/api/todos/2
+
+### 1. Register a new user
+POST http://localhost:5001/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 2. Login with that user
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### GET My Private Todos
+GET http://localhost:5001/api/todos
+Authorization: Bearer {{token}}
+
+### Create Private Todo
+POST http://localhost:5001/api/todos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "text": "My first private todo"
+}
+
+### PATCH My Private Todos
+PATCH http://localhost:5001/api/todos/6b0278cb40f68a04c4e8da40
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "done": true
+}
+
+### PUT My Private Todos
+PUT http://localhost:5001/api/todos/6b0278cb40f68a04c4e8da40
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "text": "My first private todo just updated",
+    "done": false
+}
+
+### DELETE My Private Todos
+DELETE http://localhost:5001/api/todos/6b0278cb40f68a04c4e8da40
+Content-Type: application/json
+Authorization: Bearer {{token}}

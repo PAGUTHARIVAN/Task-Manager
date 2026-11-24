@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { protect } from "../middleware/auth.middleware.js";
 import {
   listTodos,
   getTodo,
@@ -9,6 +10,9 @@ import {
 } from "../controllers/todos.controllers.js";
 
 const router = Router();
+
+//Every route below this line requires a valid JWT!
+router.use(protect);
 
 router.get("/", listTodos);
 router.post("/", createTodo);
