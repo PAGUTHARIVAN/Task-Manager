@@ -26,7 +26,7 @@ export const loginThunk = createAsyncThunk(
   "auth/login",
   async (formData, { rejectWithValue }) => {
     try {
-      return await loginUser(formData);
+      return loginUser(formData);
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -36,7 +36,7 @@ export const loginThunk = createAsyncThunk(
 const initialState = {
   user: loadSavedUser(),
   token: localStorage.getItem("token") || null,
-  status: "idle", // "idle" | "loading" | "succeeded" | "failed"
+  status: "idle", //"idle" || "loading" || "succeed" || "failed"
   error: null,
 };
 
@@ -63,8 +63,8 @@ const authSlice = createSlice({
     };
     const handleFulfilled = (state, action) => {
       state.status = "succeeded";
-      state.token = action.payload.token;
       state.user = action.payload.user;
+      state.token = action.payload.token;
       localStorage.setItem("token", action.payload.token);
       localStorage.setItem("user", JSON.stringify(action.payload.user));
     };

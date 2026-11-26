@@ -1,51 +1,59 @@
-//BASE URL
-const API_URL = "http://localhost:5001/api/todos";
+//API_URL
+const API_URL = import.meta.env.VITE_TODO_URL;
 
 const getAuthHeaders = (includeJson = false) => {
   const token = localStorage.getItem("token");
   const headers = {};
-  if (includeJson) headers["Content-Type"] = "application/json";
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  if (includeJson) {
+    headers["Content-Type"] = "application/json";
+  }
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
   return headers;
 };
 
-//GET
 export const getAllTodos = async () => {
   const res = await fetch(API_URL, {
     headers: getAuthHeaders(),
   });
-  if (!res.ok) throw new Error("Failed to fetch todos");
+  if (!res.ok) {
+    throw new Error("Failed to fetch todos");
+  }
   return await res.json();
 };
 
-//CREATE
 export const createTodo = async (text) => {
   const res = await fetch(API_URL, {
     method: "POST",
     headers: getAuthHeaders(true),
     body: JSON.stringify({ text }),
   });
-  if (!res.ok) throw new Error("Failed to create todo");
+  if (!res.ok) {
+    throw new Error("Failed to create todo.");
+  }
   return await res.json();
 };
 
-//UPDATE
 export const updateTodoStatus = async (taskId, toggleDone) => {
   const res = await fetch(`${API_URL}/${taskId}`, {
     method: "PATCH",
     headers: getAuthHeaders(true),
     body: JSON.stringify({ id: taskId, done: toggleDone }),
   });
-  if (!res.ok) throw new Error("Failed to update todo");
+  if (!res.ok) {
+    throw new Error("Failed to update todo.");
+  }
   return await res.json();
 };
 
-//DELETE
 export const deleteTodo = async (taskId) => {
   const res = await fetch(`${API_URL}/${taskId}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });
-  if (!res.ok) throw new Error("Failed to delete todo");
+  if (!res.ok) {
+    throw new Error("Failed to delete todo.");
+  }
   return true;
 };

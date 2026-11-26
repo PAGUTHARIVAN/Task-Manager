@@ -1,6 +1,7 @@
 //AUTH_URL
-const AUTH_URL = "http://localhost:5001/api/auth";
+const AUTH_URL = import.meta.env.VITE_AUTH_URL;
 
+//HandleResponse, Defensive Response & Error Extractor
 const handleResponse = async (res) => {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
@@ -9,6 +10,7 @@ const handleResponse = async (res) => {
   return data;
 };
 
+//registerUser
 export const registerUser = async ({ name, email, password }) => {
   const res = await fetch(`${AUTH_URL}/register`, {
     method: "POST",
@@ -17,7 +19,7 @@ export const registerUser = async ({ name, email, password }) => {
   });
   return handleResponse(res);
 };
-
+//loginUser
 export const loginUser = async ({ email, password }) => {
   const res = await fetch(`${AUTH_URL}/login`, {
     method: "POST",

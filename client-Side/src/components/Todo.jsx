@@ -5,7 +5,7 @@ import {
   addTodoAsync,
   toggleTodoAsync,
   removeTodoAsync,
-} from "./redux/todosSlice";
+} from "../redux/todosSlice.js";
 
 export const TodoApp = () => {
   const {

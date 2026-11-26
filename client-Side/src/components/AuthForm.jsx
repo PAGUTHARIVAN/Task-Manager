@@ -36,14 +36,14 @@ export const AuthForm = () => {
         <h1 className="text-2xl font-bold text-center mb-2">
           {isSignup ? "Create an Account" : "Welcome Back"}
         </h1>
-        <p className="text-sm text-scale-400 text-center mb-6">
+        <p className="text-sm text-slate-400 text-center mb-6">
           {isSignup
             ? "Sign up to manage your private todos"
             : "Log in to view your todos"}
         </p>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border-red-500/40 text-red-400 text-sm">
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/40 text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -104,7 +104,7 @@ export const AuthForm = () => {
           <button
             type="button"
             onClick={handleToggleMode}
-            className="text-indigo-400 hover:undlerline font-medium"
+            className="text-indigo-400 hover:underline font-medium"
           >
             {isSignup ? "Log In" : "Sign Up"}
           </button>
