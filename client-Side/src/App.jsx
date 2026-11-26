@@ -4,7 +4,6 @@ import { logout } from "./redux/authSlice.js";
 import { fetchTodosAsync } from "./redux/todosSlice.js";
 import { AuthForm } from "./components/AuthForm.jsx";
 import { TodoApp } from "./components/Todo.jsx";
-import "./App.css";
 
 function App() {
   const dispatch = useDispatch();
